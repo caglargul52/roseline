@@ -1,6 +1,6 @@
 ﻿namespace RosePipe;
 
-public abstract class StepBase<T> : IStep<T> where T : class
+public abstract class StepBase<T> : IStep<T> where T : BagBase
 {
     public Pipeline<T>? Pipeline { get; private set; }
     public Exception? Error { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace RosePipe;
 
-public interface IStep<T> where T : class
+public interface IStep<T> where T : BagBase
 {
     Exception? Error { get; set; }
     bool IsContinueProcess { get; set; }

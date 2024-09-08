@@ -1,6 +1,6 @@
 ﻿namespace RosePipe;
 
-public sealed class Pipeline<T> where T : class
+public sealed class Pipeline<T> where T : BagBase
 {
     public List<IStep<T>> Steps { get; } = new();
     public IStep<T>? CurrentStep { get; set; }
