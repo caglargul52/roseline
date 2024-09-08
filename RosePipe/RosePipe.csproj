@@ -10,11 +10,13 @@
   	    <Description>This is a sample Pipeline design pattern package.</Description>
 	    <PackageTags>utility;library;nuget</PackageTags>
 	    <RepositoryUrl>https://github.com/caglargul52/pipe-rose</RepositoryUrl>
-		<PackageIcon>images/icon.png</PackageIcon>
+	    <PackageIcon>images\icon.png</PackageIcon>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<None Update="images/icon.png" Pack="true" PackagePath="images/" />
-	</ItemGroup>
-  
+    <ItemGroup>
+      <None Update="images\icon.png">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+    </ItemGroup>  
 </Project>
