@@ -69,108 +69,106 @@ Both uses are available below.
 ```csharp
 public class GetAllUserStep : StepBase<ExampleBag>
 {
-    protected override async Task<ExampleBag> ProcessAsync(ExampleBag input)
-    {
-        var users = GetFakeUsers();
-        
-        if (!users.Any())
-        {
-            return ThrowStepError(new StepError { Message = "Users is not found!" });
-        }
+  protected override async Task<ExampleBag> ProcessAsync(ExampleBag input)
+  {
+    var users = GetFakeUsers();
 
-        var output = input with { Users = users };
-
-        return Next(output);
+    if (!users.Any()) {
+      return ThrowStepError(new StepError { Message = "Users is not found!" });
     }
 
-    private List<string> GetFakeUsers()
-    {
-        return new List<string> { "Çağlar", "Osman", "Ismail" };
-    }
+    var output = input with { Users = users };
+
+    return Next(output);
+  }
+
+  private List<string> GetFakeUsers()
+  {
+    return new List<string> { "Çağlar", "Osman", "Ismail" };
+  }
 }
-
 ```
 
 ```csharp
 public class GetAllUserStep : StepBase<ExampleBag, CustomError>
 {
-    protected override async Task<ExampleBag> ProcessAsync(ExampleBag input)
-    {
-        var users = GetFakeUsers();
+  protected override async Task<ExampleBag> ProcessAsync(ExampleBag input)
+  {
+    var users = GetFakeUsers();
 
-        if (!users.Any())
-        {
-            return ThrowStepError(
-                new CustomError { Message = "Users is not found!", Code = "A1", Severity = 1 }
-            );
-        }
-
-        var output = input with { Users = users };
-
-        return Next(output);
+    if (!users.Any()) {
+      return ThrowStepError(new CustomError { Message = "Users is not found!",
+                                              Code = "A1",
+                                              Severity = 1 });
     }
 
-    private List<string> GetFakeUsers()
-    {
-        return new List<string> { "Çağlar", "Osman", "Ismail" };
-    }
+    var output = input with { Users = users };
+
+    return Next(output);
+  }
+
+  private List<string> GetFakeUsers()
+  {
+    return new List<string> { "Çağlar", "Osman", "Ismail" };
+  }
 }
 ```
 > **NOTE**
 > It is quite simple to create a copy of a record with the ***with statement*** and modify only certain fields. This allows one step in the pipeline to create a new version of the data after modifying it and then move on to the next step.
 
-### 3. Define a Step with Dependency Injection (DI)
+### 4. Define a Step with Dependency Injection (DI)
 ```csharp
 public class GetAllUserStep : StepBase<ExampleBag>
 {
-    private readonly IUserService _userService;
+  private readonly IUserService _userService;
 
-    // We inject services via constructor
-    public GetAllUserStep(IUserService userService)
-    {
-        _userService = userService;
-    }
+  // We inject services via constructor
+  public GetAllUserStep(IUserService userService)
+  {
+    _userService = userService;
+  }
 
-    protected override async Task<ExampleBag> ProcessAsync(ExampleBag input)
-    {
-        // Retrieving users using injected service
-        var users = _userService.GetUsers();
+  protected override async Task<ExampleBag> ProcessAsync(ExampleBag input)
+  {
+    // Retrieving users using injected service
+    var users = _userService.GetUsers();
 
-        var output = input with
-        {
-            Users = users
-        };
+    var output = input with { Users = users };
 
-        return Next(output);
-    }
+    return Next(output);
+  }
 }
 ```
-### 4. Create and Execute the Pipeline
+### 5. Create and Execute the Pipeline
 ```csharp
-//initial bag definiton
-var bag = new ExampleBag {
-  Users = []
-};
+class Program
+{
+  static async Task Main(string[] args)
+  {
+    // initial bag definiton
+    var bag = new ExampleBag { Users = [] };
 
-var pipeline = new Pipeline<ExampleBag, CustomError> (bag);
+    var pipeline = new Pipeline<ExampleBag, CustomError>(bag);
 
-pipeline.AddStep(new GetAllUserStep());
-pipeline.AddStep(new DeleteFirstUserStep());
+    pipeline.AddStep(new GetAllUserStep());
+    pipeline.AddStep(new DeleteFirstUserStep());
 
-var pipelineResult = await pipeline.ExecuteAsync();
+    var pipelineResult = await pipeline.ExecuteAsync();
 
-if (pipelineResult.IsSuccess) {
-  Console.WriteLine(string.Join(",", pipelineResult.Bag.Users));
-}
-else {
-  Console.WriteLine($"Step: {pipelineResult.Error.Step}, IsUnHandledError: {pipelineResult.Error.IsUnhandledError}, Code: {pipelineResult.Error.Code}");
+    if (pipelineResult.IsSuccess) {
+      Console.WriteLine(string.Join(",", pipelineResult.Bag.Users));
+    } else {
+      Console.WriteLine(
+        $"Step: {pipelineResult.Error.Step}, IsUnHandledError: {pipelineResult.Error.IsUnhandledError}, Code: {pipelineResult.Error.Code}");
+    }
+  }
 }
 ```
 Output: 
 ```bash
 Osman,Ismail
 ```
-### 5. Branching Pipeline and Continuation in Stages
+### 6. Branching Pipeline and Continuation in Stages
 This pipeline showcases a conditional workflow where different actions are taken based on whether the user’s PIN validation succeeds or fails. It helps to manage different paths in authentication or other validation scenarios, allowing for greater flexibility in handling user processes. This branching design enables the system to adapt based on user input or conditions encountered during processing.
 ```mermaid
   graph TD;
@@ -179,43 +177,49 @@ This pipeline showcases a conditional workflow where different actions are taken
       VerifyUserPinStep--Not Validated-->ResetRetryCountStep-->CompleteProcessStep;
 ```
 ```csharp
-//initial bag definiton
+class Program
+{
+  static async Task Main(string[] args)
+  {
+    // initial bag definiton
 
-var bag = new ExampleBag {
-  Users = []
-  IsPinVerified = false
-};
+    var bag = new ExampleBag { Users = [], IsPinVerified = false };
 
-var pipeline = new Pipeline<ExampleBag, CustomError>(bag);
+    var pipeline = new Pipeline<ExampleBag, CustomError>(bag);
 
-pipeline.AddStep(new GetUserInfoStep());
-pipeline.AddStep(new VerifyUserPinStep());
+    pipeline.AddStep(new GetUserInfoStep());
+    pipeline.AddStep(new VerifyUserPinStep());
 
-var halfResult = await pipeline.ExecuteAsync();
+    var halfResult = await pipeline.ExecuteAsync();
 
-if (!halfResult.IsSuccess) {
-  Console.WriteLine($"Step: {halfResult.Error.Step}, IsUnHandledError: {halfResult.Error.IsUnhandledError}, Code: {halfResult.Error.Code}");
-  return;
+    if (!halfResult.IsSuccess) {
+      Console.WriteLine(
+        $"Step: {halfResult.Error.Step}, IsUnHandledError: {halfResult.Error.IsUnhandledError}, Code: {halfResult.Error.Code}");
+      return;
+    }
+
+    if (halfResult.Bag.IsPinVerified) {
+      pipeline.AddStep(new IncrementRetryCountStep());
+      pipeline.AddStep(new SendSmsOtpStep());
+    } else {
+      pipeline.AddStep(new ResetRetryCountStep());
+    }
+
+    pipeline.AddStep(new CompleteProcessStep());
+
+    var result = await pipeline.ExecuteAsync();
+
+    if (!result.IsSuccess) {
+      Console.WriteLine(
+        $"Step: {result.Error.Step}, IsUnHandledError: {result.Error.IsUnhandledError}, Code: {result.Error.Code}");
+      return;
+    }
+
+    Console.WriteLine(string.Join(",", result.Bag.Users));
+
+    Console.Read();
+  }
 }
-
-if (halfResult.Bag.IsPinVerified) {
-  pipeline.AddStep(new IncrementRetryCountStep());
-  pipeline.AddStep(new SendSmsOtpStep());
-}
-else {
-  pipeline.AddStep(new ResetRetryCountStep());
-}
-
-pipeline.AddStep(new CompleteProcessStep());
-
-var result = await pipeline.ExecuteAsync();
-
-if (!result.IsSuccess) {
-  Console.WriteLine($"Step: {result.Error.Step}, IsUnHandledError: {result.Error.IsUnhandledError}, Code: {result.Error.Code}");
-  return;
-}
-
-Console.WriteLine(string.Join(",", result.Bag.Users));
 ```
 > **NOTE**
 > In this example, the pipeline processing is designed to execute in multiple stages, with the ability to resume from where it left off. This is a critical design feature, as it allows you to execute part of the pipeline, make decisions based on intermediate results, and continue the process without restarting from the beginning.
