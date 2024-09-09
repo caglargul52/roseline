@@ -223,3 +223,7 @@ class Program
 ```
 > **NOTE**
 > In this example, the pipeline processing is designed to execute in multiple stages, with the ability to resume from where it left off. This is a critical design feature, as it allows you to execute part of the pipeline, make decisions based on intermediate results, and continue the process without restarting from the beginning.
+
+## Support
+
+If you are having problems, please let me know by [raising a new issue](https://github.com/caglargul52/rose-pipe/issues/new/choose).
