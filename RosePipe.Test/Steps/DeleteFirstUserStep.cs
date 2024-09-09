@@ -6,7 +6,11 @@ public class DeleteFirstUserStep : StepBase<ExampleBag>
     {
         input.Users.RemoveAt(0);
 
-        return StepError(new Exception("deneme"));
+        return ThrowStepError(new CustomError()
+        {
+            Code = "12314",
+            Message = "Merhaba",
+        });
         
         var output = input with
         {
