@@ -173,8 +173,8 @@ This pipeline showcases a conditional workflow where different actions are taken
 ```mermaid
   graph TD;
       GetUserInfoStep-->VerifyUserPinStep;
-      VerifyUserPinStep--Validated-->IncrementRetryCountStep-->SendSmsOtpStep-->CompleteProcessStep;
-      VerifyUserPinStep--Not Validated-->ResetRetryCountStep-->CompleteProcessStep;
+      VerifyUserPinStep--Not Validated-->IncrementRetryCountStep-->SendSmsOtpStep-->CompleteProcessStep;
+      VerifyUserPinStep--Validated-->ResetRetryCountStep-->CompleteProcessStep;
 ```
 ```csharp
 class Program
@@ -198,7 +198,7 @@ class Program
       return;
     }
 
-    if (halfResult.Bag.IsPinVerified) {
+    if (!halfResult.Bag.IsPinVerified) {
       pipeline.AddStep(new IncrementRetryCountStep());
       pipeline.AddStep(new SendSmsOtpStep());
     } else {
