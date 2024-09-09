@@ -2,8 +2,8 @@
 # RosePipe
 ![Icon](https://github.com/caglargul52/pipe-rose/blob/main/RosePipe/images/icon.png?raw=true)
 
-[![Nuget](https://img.shields.io/nuget/v/RosePipe?label=NuGet)](https://www.nuget.org/packages/Clean.Architecture.Solution.Template)
-[![Nuget](https://img.shields.io/nuget/dt/RosePipe?label=Downloads)](https://www.nuget.org/packages/Clean.Architecture.Solution.Template)
+[![Nuget](https://img.shields.io/nuget/v/RosePipe?label=NuGet)](https://www.nuget.org/packages/RosePipe)
+[![Nuget](https://img.shields.io/nuget/dt/RosePipe?label=Downloads)](https://www.nuget.org/packages/RosePipe)
 
 <a href="https://www.instagram.com/caglargul.52/">
     <img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Follow @caglargul.52" /></a> &nbsp; <a href="https://www.linkedin.com/in/caglargul52/">
