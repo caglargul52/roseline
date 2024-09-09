@@ -170,3 +170,52 @@ Output:
 ```bash
 Osman,Ismail
 ```
+### 5. Branching Pipeline and Continuation in Stages
+This pipeline showcases a conditional workflow where different actions are taken based on whether the user’s PIN validation succeeds or fails. It helps to manage different paths in authentication or other validation scenarios, allowing for greater flexibility in handling user processes. This branching design enables the system to adapt based on user input or conditions encountered during processing.
+```mermaid
+  graph TD;
+      GetUserInfoStep-->VerifyUserPinStep;
+      VerifyUserPinStep--Validated-->IncrementRetryCountStep-->SendSmsOtpStep-->CompleteProcessStep;
+      VerifyUserPinStep--Not Validated-->ResetRetryCountStep-->CompleteProcessStep;
+```
+```csharp
+//initial bag definiton
+
+var bag = new ExampleBag {
+  Users = []
+  IsPinVerified = false
+};
+
+var pipeline = new Pipeline<ExampleBag, CustomError>(bag);
+
+pipeline.AddStep(new GetUserInfoStep());
+pipeline.AddStep(new VerifyUserPinStep());
+
+var halfResult = await pipeline.ExecuteAsync();
+
+if (!halfResult.IsSuccess) {
+  Console.WriteLine($"Step: {halfResult.Error.Step}, IsUnHandledError: {halfResult.Error.IsUnhandledError}, Code: {halfResult.Error.Code}");
+  return;
+}
+
+if (halfResult.Bag.IsPinVerified) {
+  pipeline.AddStep(new IncrementRetryCountStep());
+  pipeline.AddStep(new SendSmsOtpStep());
+}
+else {
+  pipeline.AddStep(new ResetRetryCountStep());
+}
+
+pipeline.AddStep(new CompleteProcessStep());
+
+var result = await pipeline.ExecuteAsync();
+
+if (!result.IsSuccess) {
+  Console.WriteLine($"Step: {result.Error.Step}, IsUnHandledError: {result.Error.IsUnhandledError}, Code: {result.Error.Code}");
+  return;
+}
+
+Console.WriteLine(string.Join(",", result.Bag.Users));
+```
+> **NOTE**
+> In this example, the pipeline processing is designed to execute in multiple stages, with the ability to resume from where it left off. This is a critical design feature, as it allows you to execute part of the pipeline, make decisions based on intermediate results, and continue the process without restarting from the beginning.
