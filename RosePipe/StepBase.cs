@@ -3,19 +3,19 @@ using System.Text.Json;
 
 namespace RosePipe;
 
-public abstract class StepBase<T, T2> : IStep<T, T2> 
-    where T : BagBase
-    where T2 : StepError, new()
+public abstract class StepBase<TBag, TError> : IStep<TBag, TError> 
+    where TBag : BagBase
+    where TError : StepError, new()
 {
-    public Pipeline<T, T2>? Pipeline { get; private set; }
-    public T2? Error { get; set; }
+    public Pipeline<TBag, TError>? Pipeline { get; private set; }
+    public TError? Error { get; set; }
     public bool IsContinueProcess { get; set; }
 
-    private T CurrentDto;
+    private TBag CurrentDto;
 
-    protected abstract Task<T> ProcessAsync(T input);
+    protected abstract Task<TBag> ProcessAsync(TBag input);
 
-    public T ThrowStepError(T2 error)
+    public TBag ThrowStepError(TError error)
     {            
         var index = this.Pipeline.CurrentStepIndex;
             
@@ -28,19 +28,19 @@ public abstract class StepBase<T, T2> : IStep<T, T2>
         return CurrentDto;
     }
 
-    protected T Next(T output)
+    protected TBag Next(TBag output)
     {
         IsContinueProcess = true;
         return output;
     }
 
-    protected T Stop(T output)
+    protected TBag Stop(TBag output)
     {
         IsContinueProcess = false;
         return output;
     }
 
-    public async Task<T> ExecuteAsync(T input)
+    public async Task<TBag> ExecuteAsync(TBag input)
     {
         CurrentDto = input;
 
@@ -54,7 +54,7 @@ public abstract class StepBase<T, T2> : IStep<T, T2>
             
             var stepName = this.Pipeline.Steps[index].GetType().Name;
 
-            var error = new T2()
+            var error = new TError()
             {
                 Message = ex.ToString(),
             };
@@ -64,29 +64,29 @@ public abstract class StepBase<T, T2> : IStep<T, T2>
 
             var json = JsonSerializer.Serialize(error);
 
-            this.Error = JsonSerializer.Deserialize<T2?>(json);
+            this.Error = JsonSerializer.Deserialize<TError?>(json);
         }
 
         return CurrentDto;
     }
 
-    void IStep<T, T2>.AddPipeline(Pipeline<T, T2> pipeline)
+    void IStep<TBag, TError>.AddPipeline(Pipeline<TBag, TError> pipeline)
     {
         Pipeline = pipeline;
     }
 }
 
-public abstract class StepBase<T> : IStep<T> where T : BagBase
+public abstract class StepBase<TBag> : IStep<TBag> where TBag : BagBase
 {
-    public Pipeline<T>? Pipeline { get; private set; }
+    public Pipeline<TBag>? Pipeline { get; private set; }
     public StepError? Error { get; set; }
     public bool IsContinueProcess { get; set; }
 
-    private T CurrentDto;
+    private TBag CurrentDto;
 
-    protected abstract Task<T> ProcessAsync(T input);
+    protected abstract Task<TBag> ProcessAsync(TBag input);
 
-    public T ThrowStepError(StepError error)
+    public TBag ThrowStepError(StepError error)
     {
         var index = this.Pipeline.CurrentStepIndex;
 
@@ -99,19 +99,19 @@ public abstract class StepBase<T> : IStep<T> where T : BagBase
         return CurrentDto;
     }
 
-    protected T Next(T output)
+    protected TBag Next(TBag output)
     {
         IsContinueProcess = true;
         return output;
     }
 
-    protected T Stop(T output)
+    protected TBag Stop(TBag output)
     {
         IsContinueProcess = false;
         return output;
     }
 
-    public async Task<T> ExecuteAsync(T input)
+    public async Task<TBag> ExecuteAsync(TBag input)
     {
         CurrentDto = input;
 
@@ -139,7 +139,7 @@ public abstract class StepBase<T> : IStep<T> where T : BagBase
         return CurrentDto;
     }
 
-    void IStep<T>.AddPipeline(Pipeline<T> pipeline)
+    void IStep<TBag>.AddPipeline(Pipeline<TBag> pipeline)
     {
         Pipeline = pipeline;
     }

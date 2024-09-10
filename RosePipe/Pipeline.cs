@@ -2,36 +2,36 @@
 
 /// <summary>
 /// Represents a pipeline that processes a series of steps.
-/// Each step operates on a data bag of type <typeparamref name="T"/> and can handle errors of type <typeparamref name="T2"/>.
+/// Each step operates on a data bag of type <typeparamref name="TBag"/> and can handle errors of type <typeparamref name="TError"/>.
 /// </summary>
-/// <typeparam name="T">The type of the data bag that each step operates on, inheriting from <see cref="BagBase"/>.</typeparam>
-/// <typeparam name="T2">The type of the custom exception for step errors, inheriting from <see cref="StepError"/>.</typeparam>
-public sealed class Pipeline<T, T2> where T : BagBase
-    where T2 : StepError, new()
+/// <typeparam name="TBag">The type of the data bag that each step operates on, inheriting from <see cref="BagBase"/>.</typeparam>
+/// <typeparam name="TError">The type of the custom exception for step errors, inheriting from <see cref="StepError"/>.</typeparam>
+public sealed class Pipeline<TBag, TError> where TBag : BagBase
+    where TError : StepError, new()
 {
     /// <summary>
     /// Gets the list of steps in the pipeline.
     /// </summary>
-    public List<IStep<T, T2>> Steps { get; } = new();
+    public List<IStep<TBag, TError>> Steps { get; } = new();
 
     /// <summary>
     /// Gets or sets the current step being executed in the pipeline.
     /// </summary>
-    public IStep<T, T2>? CurrentStep { get; private set; }
+    public IStep<TBag, TError>? CurrentStep { get; private set; }
 
     /// <summary>
     /// Gets or sets the index of the current step being executed.
     /// </summary>
     public int CurrentStepIndex { get; private set; } = 0;
 
-    private T _currentDto;
+    private TBag _currentDto;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Pipeline{T, T2}"/> class with the provided data bag.
     /// </summary>
     /// <param name="pipeDto">The data bag to be processed through the pipeline.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="pipeDto"/> is null.</exception>
-    public Pipeline(T? pipeDto)
+    public Pipeline(TBag? pipeDto)
     {
         if (pipeDto is null)
         {
@@ -48,7 +48,7 @@ public sealed class Pipeline<T, T2> where T : BagBase
     /// </summary>
     /// <param name="step">The step to add to the pipeline.</param>
     /// <returns>The current pipeline instance for method chaining.</returns>
-    public Pipeline<T, T2> AddStep(IStep<T, T2> step)
+    public Pipeline<TBag, TError> AddStep(IStep<TBag, TError> step)
     {
         step.AddPipeline(this);
 
@@ -62,9 +62,9 @@ public sealed class Pipeline<T, T2> where T : BagBase
     /// </summary>
     /// <param name="steps">The steps to add to the pipeline.</param>
     /// <returns>The current pipeline instance for method chaining.</returns>
-    public Pipeline<T, T2> AddRangeStep(List<IStep<T, T2>> steps)
+    public Pipeline<TBag, TError> AddRangeStep(List<IStep<TBag, TError>> steps)
     {
-        foreach (IStep<T, T2> step in steps)
+        foreach (IStep<TBag, TError> step in steps)
         {
             Steps.Add(step);
         }
@@ -76,16 +76,16 @@ public sealed class Pipeline<T, T2> where T : BagBase
     /// Executes all steps in the pipeline asynchronously.
     /// </summary>
     /// <returns>An <see cref="ExecutionResult{T, T2}"/> indicating the success or failure of the pipeline execution.</returns>
-    public async Task<ExecutionResult<T, T2>> ExecuteAsync()
+    public async Task<ExecutionResult<TBag, TError>> ExecuteAsync()
     {
         if (CurrentStep?.Error is not null)
         {
-            return new ExecutionResult<T, T2>(false, _currentDto, CurrentStep?.Error);
+            return new ExecutionResult<TBag, TError>(false, _currentDto, CurrentStep?.Error);
         }
 
         if (CurrentStep?.IsContinueProcess == false)
         {
-            return new ExecutionResult<T, T2>(true, _currentDto, null);
+            return new ExecutionResult<TBag, TError>(true, _currentDto, null);
         }
 
         for (int i = CurrentStepIndex; i < Steps.Count; i++)
@@ -96,7 +96,7 @@ public sealed class Pipeline<T, T2> where T : BagBase
 
             if (Steps[i].Error is not null)
             {
-                return new ExecutionResult<T, T2>(false, _currentDto, Steps[i].Error);
+                return new ExecutionResult<TBag, TError>(false, _currentDto, Steps[i].Error);
             }
 
             if (!Steps[i].IsContinueProcess)
@@ -107,40 +107,40 @@ public sealed class Pipeline<T, T2> where T : BagBase
             CurrentStepIndex++;
         }
 
-        return new ExecutionResult<T, T2>(true, _currentDto, null);
+        return new ExecutionResult<TBag, TError>(true, _currentDto, null);
     }
 }
 
 /// <summary>
 /// Represents a pipeline that processes a series of steps without custom exception handling.
-/// Each step operates on a data bag of type <typeparamref name="T"/>.
+/// Each step operates on a data bag of type <typeparamref name="TBag"/>.
 /// </summary>
-/// <typeparam name="T">The type of the data bag that each step operates on, inheriting from <see cref="BagBase"/>.</typeparam>
-public sealed class Pipeline<T> where T : BagBase
+/// <typeparam name="TBag">The type of the data bag that each step operates on, inheriting from <see cref="BagBase"/>.</typeparam>
+public sealed class Pipeline<TBag> where TBag : BagBase
 {
     /// <summary>
     /// Gets the list of steps in the pipeline.
     /// </summary>
-    public List<IStep<T>> Steps { get; } = new();
+    public List<IStep<TBag>> Steps { get; } = new();
 
     /// <summary>
     /// Gets or sets the current step being executed in the pipeline.
     /// </summary>
-    public IStep<T>? CurrentStep { get; private set; }
+    public IStep<TBag>? CurrentStep { get; private set; }
 
     /// <summary>
     /// Gets or sets the index of the current step being executed.
     /// </summary>
     public int CurrentStepIndex { get; private set; } = 0;
 
-    private T _currentDto;
+    private TBag _currentDto;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Pipeline{T}"/> class with the provided data bag.
     /// </summary>
     /// <param name="pipeDto">The data bag to be processed through the pipeline.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="pipeDto"/> is null.</exception>
-    public Pipeline(T? pipeDto)
+    public Pipeline(TBag? pipeDto)
     {
         if (pipeDto is null)
         {
@@ -157,7 +157,7 @@ public sealed class Pipeline<T> where T : BagBase
     /// </summary>
     /// <param name="step">The step to add to the pipeline.</param>
     /// <returns>The current pipeline instance for method chaining.</returns>
-    public Pipeline<T> AddStep(IStep<T> step)
+    public Pipeline<TBag> AddStep(IStep<TBag> step)
     {
         step.AddPipeline(this);
 
@@ -171,9 +171,9 @@ public sealed class Pipeline<T> where T : BagBase
     /// </summary>
     /// <param name="steps">The steps to add to the pipeline.</param>
     /// <returns>The current pipeline instance for method chaining.</returns>
-    public Pipeline<T> AddRangeStep(List<IStep<T>> steps)
+    public Pipeline<TBag> AddRangeStep(List<IStep<TBag>> steps)
     {
-        foreach (IStep<T> step in steps)
+        foreach (IStep<TBag> step in steps)
         {
             Steps.Add(step);
         }
@@ -185,16 +185,16 @@ public sealed class Pipeline<T> where T : BagBase
     /// Executes all steps in the pipeline asynchronously.
     /// </summary>
     /// <returns>An <see cref="ExecutionResult{T, StepException}"/> indicating the success or failure of the pipeline execution.</returns>
-    public async Task<ExecutionResult<T, StepError>> ExecuteAsync()
+    public async Task<ExecutionResult<TBag, StepError>> ExecuteAsync()
     {
         if (CurrentStep?.Error is not null)
         {
-            return new ExecutionResult<T, StepError>(false, _currentDto, CurrentStep?.Error);
+            return new ExecutionResult<TBag, StepError>(false, _currentDto, CurrentStep?.Error);
         }
 
         if (CurrentStep?.IsContinueProcess == false)
         {
-            return new ExecutionResult<T, StepError>(true, _currentDto, null);
+            return new ExecutionResult<TBag, StepError>(true, _currentDto, null);
         }
 
         for (int i = CurrentStepIndex; i < Steps.Count; i++)
@@ -205,7 +205,7 @@ public sealed class Pipeline<T> where T : BagBase
 
             if (Steps[i].Error is not null)
             {
-                return new ExecutionResult<T, StepError>(false, _currentDto, Steps[i].Error);
+                return new ExecutionResult<TBag, StepError>(false, _currentDto, Steps[i].Error);
             }
 
             if (!Steps[i].IsContinueProcess)
@@ -216,6 +216,6 @@ public sealed class Pipeline<T> where T : BagBase
             CurrentStepIndex++;
         }
 
-        return new ExecutionResult<T, StepError>(true, _currentDto, null);
+        return new ExecutionResult<TBag, StepError>(true, _currentDto, null);
     }
 }
