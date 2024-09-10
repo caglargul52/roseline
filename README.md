@@ -56,9 +56,9 @@ public class CustomError : StepError
 ### 3. Define a Step
 A step is implemented by deriving from the StepBase class. There are two different derivation methods. StepBase<TBag> and StepBase <TBag, TError>.
 
-If the default Error class will be used in the step, ***StepBase<TBag>***  is used. ***T*** here stands for Bag class type (Default: StepError class)
+If the default Error class will be used in the step, ***StepBase<TBag>***  is used. ***TBag*** here stands for Bag class type (Default: StepError class)
 
-If a custom error class is to be used, ***StepBase <TBag, TError>*** is used. ***T2*** here refers to the Custom error type.
+If a custom error class is to be used, ***StepBase <TBag, TError>*** is used. ***TError*** here refers to the Custom error type.
 
 There are some special methods to be used in step. These are
 - ***ThrowStepError*** : It is used to throw processed errors.
