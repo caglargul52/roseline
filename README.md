@@ -34,7 +34,7 @@ dotnet add package RosePipe
 ### 1. Define a Bag Class
 Bags are designed to be ***record*** based. This prevents unintentional modification of data when moving data between pipeline steps. In these steps, the data is copied at each step to create new data, thus keeping the data moved in the previous steps safe.
 ```csharp
-public class MyBag : BagBase
+public record ExampleBag : BagBase
 {
     public string Data { get; set; }
 }
