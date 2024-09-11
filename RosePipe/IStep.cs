@@ -12,12 +12,7 @@ public interface IStep<TBag, TError> where TBag : BagBase
     /// <summary>
     /// Gets or sets the error encountered during the execution of the step, if any.
     /// </summary>
-    TError? Error { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the pipeline should continue processing subsequent steps.
-    /// </summary>
-    bool IsContinueProcess { get; set; }
+    TError? GetError();
 
     /// <summary>
     /// Executes the step asynchronously using the provided data bag.
@@ -40,6 +35,8 @@ public interface IStep<TBag, TError> where TBag : BagBase
     /// <param name="error">The error of type <typeparamref name="TError"/> that occurred during the step execution.</param>
     /// <returns>A result of type <typeparamref name="TBag"/> after processing the error.</returns>
     TBag ThrowStepError(TError error);
+
+    bool IsContinueProcess();
 }
 
 
@@ -53,12 +50,7 @@ public interface IStep<TBag> where TBag : BagBase
     /// <summary>
     /// Gets or sets the error encountered during the execution of the step, if any.
     /// </summary>
-    StepError? Error { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the pipeline should continue processing subsequent steps.
-    /// </summary>
-    bool IsContinueProcess { get; set; }
+    StepError? GetError();
 
     /// <summary>
     /// Executes the step asynchronously using the provided data bag.
@@ -81,4 +73,6 @@ public interface IStep<TBag> where TBag : BagBase
     /// <param name="error">The <see cref="StepError"/> instance that occurred during the step execution.</param>
     /// <returns>A result of type <typeparamref name="TBag"/> after processing the error.</returns>
     TBag ThrowStepError(StepError error);
+
+    bool IsContinueProcess();
 }

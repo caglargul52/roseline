@@ -27,7 +27,7 @@ public sealed class Pipeline<TBag, TError> where TBag : BagBase
     private TBag _currentDto;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Pipeline{T, T2}"/> class with the provided data bag.
+    /// Initializes a new instance of the <see cref="Pipeline{TBag, TError}"/> class with the provided data bag.
     /// </summary>
     /// <param name="pipeDto">The data bag to be processed through the pipeline.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="pipeDto"/> is null.</exception>
@@ -75,15 +75,15 @@ public sealed class Pipeline<TBag, TError> where TBag : BagBase
     /// <summary>
     /// Executes all steps in the pipeline asynchronously.
     /// </summary>
-    /// <returns>An <see cref="ExecutionResult{T, T2}"/> indicating the success or failure of the pipeline execution.</returns>
+    /// <returns>An <see cref="ExecutionResult{TBag, TError}"/> indicating the success or failure of the pipeline execution.</returns>
     public async Task<ExecutionResult<TBag, TError>> ExecuteAsync()
     {
-        if (CurrentStep?.Error is not null)
+        if (CurrentStep?.GetError() is not null)
         {
-            return new ExecutionResult<TBag, TError>(false, _currentDto, CurrentStep?.Error);
+            return new ExecutionResult<TBag, TError>(false, _currentDto, CurrentStep?.GetError());
         }
 
-        if (CurrentStep?.IsContinueProcess == false)
+        if (CurrentStep?.IsContinueProcess() == false)
         {
             return new ExecutionResult<TBag, TError>(true, _currentDto, null);
         }
@@ -94,12 +94,12 @@ public sealed class Pipeline<TBag, TError> where TBag : BagBase
 
             CurrentStep = Steps[i];
 
-            if (Steps[i].Error is not null)
+            if (Steps[i].GetError() is not null)
             {
-                return new ExecutionResult<TBag, TError>(false, _currentDto, Steps[i].Error);
+                return new ExecutionResult<TBag, TError>(false, _currentDto, Steps[i].GetError());
             }
 
-            if (!Steps[i].IsContinueProcess)
+            if (!Steps[i].IsContinueProcess())
             {
                 break;
             }
@@ -136,7 +136,7 @@ public sealed class Pipeline<TBag> where TBag : BagBase
     private TBag _currentDto;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Pipeline{T}"/> class with the provided data bag.
+    /// Initializes a new instance of the <see cref="Pipeline{TBag}"/> class with the provided data bag.
     /// </summary>
     /// <param name="pipeDto">The data bag to be processed through the pipeline.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="pipeDto"/> is null.</exception>
@@ -184,15 +184,15 @@ public sealed class Pipeline<TBag> where TBag : BagBase
     /// <summary>
     /// Executes all steps in the pipeline asynchronously.
     /// </summary>
-    /// <returns>An <see cref="ExecutionResult{T, StepException}"/> indicating the success or failure of the pipeline execution.</returns>
+    /// <returns>An <see cref="ExecutionResult{TBag, StepError}"/> indicating the success or failure of the pipeline execution.</returns>
     public async Task<ExecutionResult<TBag, StepError>> ExecuteAsync()
     {
-        if (CurrentStep?.Error is not null)
+        if (CurrentStep?.GetError() is not null)
         {
-            return new ExecutionResult<TBag, StepError>(false, _currentDto, CurrentStep?.Error);
+            return new ExecutionResult<TBag, StepError>(false, _currentDto, CurrentStep?.GetError());
         }
 
-        if (CurrentStep?.IsContinueProcess == false)
+        if (CurrentStep?.IsContinueProcess() == false)
         {
             return new ExecutionResult<TBag, StepError>(true, _currentDto, null);
         }
@@ -203,12 +203,12 @@ public sealed class Pipeline<TBag> where TBag : BagBase
 
             CurrentStep = Steps[i];
 
-            if (Steps[i].Error is not null)
+            if (Steps[i].GetError() is not null)
             {
-                return new ExecutionResult<TBag, StepError>(false, _currentDto, Steps[i].Error);
+                return new ExecutionResult<TBag, StepError>(false, _currentDto, Steps[i].GetError());
             }
 
-            if (!Steps[i].IsContinueProcess)
+            if (!Steps[i].IsContinueProcess())
             {
                 break;
             }

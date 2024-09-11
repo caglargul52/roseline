@@ -7,9 +7,9 @@ public abstract class StepBase<TBag, TError> : IStep<TBag, TError>
     where TBag : BagBase
     where TError : StepError, new()
 {
-    public Pipeline<TBag, TError>? Pipeline { get; private set; }
-    public TError? Error { get; set; }
-    public bool IsContinueProcess { get; set; }
+    private Pipeline<TBag, TError>? Pipeline { get; set; }
+    private TError? Error { get; set; }
+    private bool IsContinueProcess { get; set; }
 
     private TBag CurrentDto;
 
@@ -40,7 +40,7 @@ public abstract class StepBase<TBag, TError> : IStep<TBag, TError>
         return output;
     }
 
-    public async Task<TBag> ExecuteAsync(TBag input)
+    async Task<TBag> IStep<TBag, TError>.ExecuteAsync(TBag input)
     {
         CurrentDto = input;
 
@@ -74,13 +74,23 @@ public abstract class StepBase<TBag, TError> : IStep<TBag, TError>
     {
         Pipeline = pipeline;
     }
+
+    bool IStep<TBag, TError>.IsContinueProcess()
+    {
+        return IsContinueProcess;
+    }
+
+    public TError? GetError()
+    {
+        return Error;
+    }
 }
 
 public abstract class StepBase<TBag> : IStep<TBag> where TBag : BagBase
 {
-    public Pipeline<TBag>? Pipeline { get; private set; }
-    public StepError? Error { get; set; }
-    public bool IsContinueProcess { get; set; }
+    private Pipeline<TBag>? Pipeline { get; set; }
+    private StepError? Error { get; set; }
+    private bool IsContinueProcess { get; set; }
 
     private TBag CurrentDto;
 
@@ -111,7 +121,7 @@ public abstract class StepBase<TBag> : IStep<TBag> where TBag : BagBase
         return output;
     }
 
-    public async Task<TBag> ExecuteAsync(TBag input)
+    async Task<TBag> IStep<TBag>.ExecuteAsync(TBag input)
     {
         CurrentDto = input;
 
@@ -142,5 +152,15 @@ public abstract class StepBase<TBag> : IStep<TBag> where TBag : BagBase
     void IStep<TBag>.AddPipeline(Pipeline<TBag> pipeline)
     {
         Pipeline = pipeline;
+    }
+
+    bool IStep<TBag>.IsContinueProcess()
+    {
+        return IsContinueProcess;
+    }
+
+    public StepError? GetError()
+    {
+        return Error;
     }
 }
