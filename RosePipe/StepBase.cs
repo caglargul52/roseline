@@ -80,7 +80,7 @@ public abstract class StepBase<TBag, TError> : IStep<TBag, TError>
         return IsContinueProcess;
     }
 
-    public TError? GetError()
+    TError? IStep<TBag, TError>.GetError()
     {
         return Error;
     }
@@ -159,7 +159,7 @@ public abstract class StepBase<TBag> : IStep<TBag> where TBag : BagBase
         return IsContinueProcess;
     }
 
-    public StepError? GetError()
+    StepError? IStep<TBag>.GetError()
     {
         return Error;
     }
