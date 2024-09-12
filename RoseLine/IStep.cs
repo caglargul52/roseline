@@ -1,4 +1,4 @@
-﻿namespace RosePipe;
+﻿namespace RoseLine;
 
 /// <summary>
 /// Represents a step in the pipeline that processes a data bag of type <typeparamref name="TBag"/>.

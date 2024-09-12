@@ -1,4 +1,4 @@
-﻿namespace RosePipe;
+﻿namespace RoseLine;
 
 /// <summary>
 /// Represents a pipeline that processes a series of steps.

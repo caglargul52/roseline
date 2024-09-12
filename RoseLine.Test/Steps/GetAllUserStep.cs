@@ -1,4 +1,4 @@
-﻿namespace RosePipe.Test.Steps;
+﻿namespace RoseLine.Test.Steps;
 
 public class GetAllUserStep : StepBase<ExampleBag, CustomError>
 {

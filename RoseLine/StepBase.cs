@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 
-namespace RosePipe;
+namespace RoseLine;
 
 public abstract class StepBase<TBag, TError> : IStep<TBag, TError> 
     where TBag : BagBase

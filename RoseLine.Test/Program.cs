@@ -1,6 +1,6 @@
-﻿using RosePipe.Test.Steps;
+﻿using RoseLine.Test.Steps;
 
-namespace RosePipe.Test;
+namespace RoseLine.Test;
 
 class Program
 {

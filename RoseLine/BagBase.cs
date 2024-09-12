@@ -1,4 +1,4 @@
-﻿namespace RosePipe
+﻿namespace RoseLine
 {
     /// <summary>
     /// Represents the base class for all data bags used in the pipeline.

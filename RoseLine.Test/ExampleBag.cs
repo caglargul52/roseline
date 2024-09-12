@@ -1,4 +1,4 @@
-﻿namespace RosePipe.Test;
+﻿namespace RoseLine.Test;
 
 public sealed record ExampleBag : BagBase
 {

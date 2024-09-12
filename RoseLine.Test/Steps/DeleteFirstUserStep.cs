@@ -1,4 +1,4 @@
-﻿namespace RosePipe.Test.Steps;
+﻿namespace RoseLine.Test.Steps;
 
 public class DeleteFirstUserStep : StepBase<ExampleBag, CustomError>
 {

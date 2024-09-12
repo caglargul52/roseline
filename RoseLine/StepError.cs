@@ -1,4 +1,4 @@
-﻿namespace RosePipe;
+﻿namespace RoseLine;
 
 public class StepError
 {
