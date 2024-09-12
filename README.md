@@ -1,19 +1,19 @@
 
-# RosePipe
-![Icon](https://github.com/caglargul52/pipe-rose/blob/main/RosePipe/images/icon.png?raw=true)
+# RoseLine
+![Icon](https://github.com/caglargul52/pipe-rose/blob/main/RoseLine/images/icon.png?raw=true)
 
-[![Nuget](https://img.shields.io/nuget/v/RosePipe?label=NuGet)](https://www.nuget.org/packages/RosePipe)
-[![Nuget](https://img.shields.io/nuget/dt/RosePipe?label=Downloads)](https://www.nuget.org/packages/RosePipe)
+[![Nuget](https://img.shields.io/nuget/v/RoseLine?label=NuGet)](https://www.nuget.org/packages/RoseLine)
+[![Nuget](https://img.shields.io/nuget/dt/RoseLine?label=Downloads)](https://www.nuget.org/packages/RoseLine)
 
 <a href="https://www.instagram.com/caglargul.52/">
     <img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Follow @caglargul.52" /></a> &nbsp; <a href="https://www.linkedin.com/in/caglargul52/">
     <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="Follow @caglargul52" /></a> &nbsp;  <a href="https://medium.com/caglargul-blog">
     <img src="https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white" alt="Follow @caglargul-blog"/></a>
 
-**RosePipe** is a flexible and customizable pipeline framework designed to process steps sequentially. Each step can handle errors gracefully and continue based on predefined conditions.
+**RoseLine** is a flexible and customizable pipeline framework designed to process steps sequentially. Each step can handle errors gracefully and continue based on predefined conditions.
 
-## Why RosePipe? 
-In many applications, there is a need to process data or execute tasks step by step. However, handling errors, managing data, and ensuring that each step behaves as expected can be cumbersome. **RosePipe** simplifies this by providing: 
+## Why RoseLine? 
+In many applications, there is a need to process data or execute tasks step by step. However, handling errors, managing data, and ensuring that each step behaves as expected can be cumbersome. **RoseLine** simplifies this by providing: 
 - A structured way to define steps. 
 - Error handling at each step, with the ability to continue or stop processing based on conditions. 
 - Data that flows through the pipeline and can be modified by each step. 
@@ -28,7 +28,7 @@ In many applications, there is a need to process data or execute tasks step by s
 ## Installation
 
 ```bash
-dotnet add package RosePipe
+dotnet add package RoseLine
 ```
 ## Usage
 ### 1. Define a Bag Class
