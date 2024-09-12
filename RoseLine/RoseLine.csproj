@@ -9,7 +9,7 @@
 	    <Authors>Çağlar GÜL</Authors>
   	    <Description>This is a sample Pipeline design pattern package.</Description>
 	    <PackageTags>utility;library;nuget</PackageTags>
-	    <RepositoryUrl>https://github.com/caglargul52/pipe-rose</RepositoryUrl>
+	    <RepositoryUrl>https://github.com/caglargul52/roseline</RepositoryUrl>
 	    <PackageIcon>images\icon.png</PackageIcon>
 	</PropertyGroup>
 
