@@ -27,15 +27,6 @@ public interface IStep<TBag, TError> where TBag : BagBase
     /// <param name="pipeline">The pipeline that this step belongs to.</param>
     void AddPipeline(Pipeline<TBag, TError> pipeline);
 
-    /// <summary>
-    /// Throws or handles a given error of type <typeparamref name="TError"/> during the execution of a step.
-    /// This method allows the pipeline or step to process the provided error object and 
-    /// return a corresponding result of type <typeparamref name="TBag"/>.
-    /// </summary>
-    /// <param name="error">The error of type <typeparamref name="TError"/> that occurred during the step execution.</param>
-    /// <returns>A result of type <typeparamref name="TBag"/> after processing the error.</returns>
-    TBag ThrowStepError(TError error);
-
     bool IsContinueProcess();
 }
 
@@ -64,15 +55,6 @@ public interface IStep<TBag> where TBag : BagBase
     /// </summary>
     /// <param name="pipeline">The pipeline that this step belongs to.</param>
     void AddPipeline(Pipeline<TBag> pipeline);
-
-    /// <summary>
-    /// Throws or handles a given <see cref="StepError"/> during the execution of a step.
-    /// This method allows the pipeline or step to process the provided error object and 
-    /// return a corresponding result of type <typeparamref name="TBag"/>.
-    /// </summary>
-    /// <param name="error">The <see cref="StepError"/> instance that occurred during the step execution.</param>
-    /// <returns>A result of type <typeparamref name="TBag"/> after processing the error.</returns>
-    TBag ThrowStepError(StepError error);
 
     bool IsContinueProcess();
 }

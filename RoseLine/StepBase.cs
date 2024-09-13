@@ -15,7 +15,14 @@ public abstract class StepBase<TBag, TError> : IStep<TBag, TError>
 
     protected abstract Task<TBag> ProcessAsync(TBag input);
 
-    public TBag ThrowStepError(TError error)
+    /// <summary>
+    /// Throws or handles a given error of type <typeparamref name="TError"/> during the execution of a step.
+    /// This method allows the pipeline or step to process the provided error object and 
+    /// return a corresponding result of type <typeparamref name="TBag"/>.
+    /// </summary>
+    /// <param name="error">The error of type <typeparamref name="TError"/> that occurred during the step execution.</param>
+    /// <returns>A result of type <typeparamref name="TBag"/> after processing the error.</returns>
+    protected TBag ThrowStepError(TError error)
     {            
         var index = this.Pipeline.CurrentStepIndex;
             
@@ -96,7 +103,14 @@ public abstract class StepBase<TBag> : IStep<TBag> where TBag : BagBase
 
     protected abstract Task<TBag> ProcessAsync(TBag input);
 
-    public TBag ThrowStepError(StepError error)
+    /// <summary>
+    /// Throws or handles a given <see cref="StepError"/> during the execution of a step.
+    /// This method allows the pipeline or step to process the provided error object and 
+    /// return a corresponding result of type <typeparamref name="TBag"/>.
+    /// </summary>
+    /// <param name="error">The <see cref="StepError"/> instance that occurred during the step execution.</param>
+    /// <returns>A result of type <typeparamref name="TBag"/> after processing the error.</returns>
+    protected TBag ThrowStepError(StepError error)
     {
         var index = this.Pipeline.CurrentStepIndex;
 
